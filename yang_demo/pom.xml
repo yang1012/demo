@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>groupId</groupId>
+    <artifactId>club_common</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <dependencies>
+
+    <!-- log4j2 相关-->
+    <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <version>2.7</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+        <version>2.7</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-web</artifactId>
+        <version>2.7</version>
+    </dependency>
+    <!-- ftp -->
+    <dependency>
+        <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>3.5</version>
+        </dependency>
+
+        <!-- json相关 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.18</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.13</version>
+        </dependency>
+    </dependencies>
+
+    <!-- 配置信息 -->
+    <profiles>
+        <profile>
+            <!-- 本地环境 默认激活 -->
+            <id>local</id>
+            <properties>
+                <profiles.active>local</profiles.active>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <!-- 生产环境 -->
+        <profile>
+            <id>online</id>
+            <properties>
+                <profiles.active>online</profiles.active>
+            </properties>
+        </profile>
+    </profiles>
+
+    <build>
+        <finalName>dsm_mobile</finalName>
+        <!-- 打包配置文件管理 -->
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources/global_configuration</directory>
+            </resource>
+            <resource>
+                <directory>src/main/resources/${profiles.active}</directory>
+            </resource>
+        </resources>
+
+        <plugins>
+            <!-- 跳过测试 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.19.1</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+            <!-- 编译 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.2</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                    <encoding>UTF-8</encoding>
+                    <!-- 3.1以前编译时 额外的包
+                    <compilerArguments>
+                          <extdirs>lib</extdirs>
+                    </compilerArguments>
+                    -->
+                    <!-- 3.1 以后写法 -->
+                    <compilerArgs>
+                        <!--       <arg>-verbose</arg>
+                               <arg>-Xlint:unchecked</arg>
+                               <arg>-Xlint:deprecation</arg>
+                               <arg>-bootclasspath</arg>
+                               <arg>${env.JAVA_HOME}/jre/lib/rt.jar</arg>-->
+                        <arg>-extdirs</arg>
+                        <arg>${project.basedir}/lib</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+
+    </build>
+</project>
